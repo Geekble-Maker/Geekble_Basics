@@ -37,7 +37,7 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);       // 내장 LED 핀을 출력 모드로 설정
   pinMode(SW_BUILTIN, INPUT_PULLUP);  // 내장 스위치 핀을 입력 모드로 설정 (내부 풀업 저항 사용)
 
-  Serial.println("Press the button to get your lucky number!");  // 시작 메시지 출력
+  Serial.print("Press the button to get your lucky number!\n");  // 시작 메시지 출력
 }
 
 void loop() {
@@ -59,10 +59,11 @@ void loop() {
 
     // 버튼을 뗀 순간 확정된 랜덤 숫자 출력
     Serial.print("\nYour Lucky Number: ");
-    Serial.println(luckyNumber);
+    Serial.print(luckyNumber);
+    Serial.print("\n");
 
     // LED가 당첨된 숫자의 횟수만큼 깜빡임
-    for (int i = 0; i < luckyNumber; i++) {
+    for (int i = 0; i < luckyNumber; i = (i + 1)) {
       digitalWrite(LED_BUILTIN, HIGH);
       delay(300);
       digitalWrite(LED_BUILTIN, LOW);

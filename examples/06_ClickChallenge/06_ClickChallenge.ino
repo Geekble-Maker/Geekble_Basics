@@ -24,7 +24,6 @@
 
 int clickCount = 0;      // 현재 클릭 횟수 저장
 int highScore = 0;       // 최고 기록 저장
-bool gameActive = false; // 게임이 진행 중인지 여부
 unsigned long startTime; // 게임 시작 시간을 저장 (millis() 사용)
 
 // ==============================
@@ -35,8 +34,8 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);       // 내장 LED를 출력 모드로 설정
   pinMode(SW_BUILTIN, INPUT_PULLUP);  // 내장 스위치를 입력 모드로 설정 (풀업 저항 사용)
 
-  Serial.println("🚀 Welcome to the LED Click Challenge! 🚀");
-  Serial.println("Press the button to start!");
+  Serial.print("🚀 Welcome to the LED Click Challenge! 🚀\n");
+  Serial.print("Press the button to start!\n");
 }
 
 // ==============================
@@ -44,26 +43,27 @@ void setup() {
 // ==============================
 void loop() {
   // 🎮 게임 시작 전, 사용자가 버튼을 누를 때까지 대기
-  Serial.println("\n🎮 Press the button to start the game...");
-  while (digitalRead(SW_BUILTIN) != sw_Pressed);  // 버튼이 눌릴 때까지 대기
+  Serial.print("\n🎮 Press the button to start the game...\n");
+  while (digitalRead(SW_BUILTIN) != sw_Pressed) {  // 버튼이 눌릴 때까지 대기
+    ;
+  }
   delay(50);  // 디바운싱 방지 (잘못된 중복 입력을 막기 위해 잠시 대기)
 
   // ==============================
   // ⏳ 게임 시작 전 카운트다운
   // ==============================
-  Serial.println("\n🔄 Get Ready... 3");
+  Serial.print("\n🔄 Get Ready... 3\n");
   delay(1000);
-  Serial.println("🔄 2...");
+  Serial.print("🔄 2...\n");
   delay(1000);
-  Serial.println("🔄 1...");
+  Serial.print("🔄 1...\n");
   delay(1000);
-  Serial.println("⚡ GO! Click as fast as you can!");
+  Serial.print("⚡ GO! Click as fast as you can!\n");
 
   // ==============================
   // 🕹️ 게임 시작: 클릭 카운트 측정
   // ==============================
   clickCount = 0;  // 클릭 횟수 초기화
-  gameActive = true;  // 게임 활성화
   startTime = millis();  // 현재 시간을 기록 (10초 타이머 시작)
 
   // 게임이 10초 동안 진행됨
@@ -71,27 +71,29 @@ void loop() {
     checkButtonPress();  // 사용자의 버튼 입력 감지
   }
 
-  gameActive = false;  // 게임 종료
-
   // ==============================
   // 🎯 결과 출력
   // ==============================
   Serial.print("⏱️ Time's up! Your Score: ");
-  Serial.println(clickCount);
+  Serial.print(clickCount);
+  Serial.print("\n");
 
   // 📌 최고 점수 업데이트
   if (clickCount > highScore) {
     highScore = clickCount;
-    Serial.println("🏆 New High Score!");
+    Serial.print("🏆 New High Score!\n");
   } else {
     Serial.print("🏅 Best Score: ");
-    Serial.println(highScore);
+    Serial.print(highScore);
+    Serial.print("\n");
   }
 
-  Serial.println("🔁 Press the button to play again!");
+  Serial.print("🔁 Press the button to play again!\n");
 
   // 🕹️ 사용자가 다시 버튼을 누를 때까지 대기
-  while (digitalRead(SW_BUILTIN) == sw_Released);  
+  while (digitalRead(SW_BUILTIN) == sw_Released) {
+    ;
+  }
   delay(500);  // 버튼이 눌린 후 잘못된 중복 입력 방지를 위한 짧은 대기
 }
 
@@ -109,12 +111,13 @@ void loop() {
   - `delay(50)`을 추가하여 버튼이 확실히 눌렸다가 떼어진 후에만 카운트되도록 조정.
 */
 void checkButtonPress() {
-  if (gameActive && digitalRead(SW_BUILTIN) == sw_Pressed) {  // 버튼이 눌렸는지 확인
-    clickCount++;  // 클릭 횟수 증가
+  if (digitalRead(SW_BUILTIN) == sw_Pressed) {  // 버튼이 눌렸는지 확인
+    clickCount = (clickCount + 1);              // 클릭 횟수 증가
 
     // 점수 출력
     Serial.print("👍 Click! Total: ");
-    Serial.println(clickCount);
+    Serial.print(clickCount);
+    Serial.print("\n");
 
     // LED 깜빡임 (사용자가 입력했음을 피드백으로 제공)
     digitalWrite(LED_BUILTIN, HIGH);
@@ -122,7 +125,9 @@ void checkButtonPress() {
     digitalWrite(LED_BUILTIN, LOW);
 
     // 버튼이 떼어질 때까지 대기 (디바운싱 처리)
-    while (digitalRead(SW_BUILTIN) == sw_Pressed);
+    while (digitalRead(SW_BUILTIN) == sw_Pressed) {
+      ;
+    }
     delay(50);  // 불필요한 추가 입력 방지
   }
 }

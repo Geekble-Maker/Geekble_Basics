@@ -191,8 +191,8 @@ void setup() {
 
   // 시리얼 모니터에 ASCII 아트 개수 출력
   Serial.print("🎨 총 ASCII 아트 개수: ");
-  Serial.println(numAsciiArts);
-  Serial.println("🎨 버튼을 눌러 랜덤 ASCII 아트를 출력하세요! 🎨");
+  Serial.print(numAsciiArts);
+  Serial.print("\n🎨 버튼을 눌러 랜덤 ASCII 아트를 출력하세요! 🎨\n");
 }
 
 // ==============================
@@ -202,10 +202,10 @@ void setup() {
 void loop() {
   // 버튼이 눌렸을 때 실행
   if (digitalRead(SW_BUILTIN) == sw_Pressed) {
-    Serial.println("🔄 ASCII 아트 생성 중...");
+    Serial.print("🔄 ASCII 아트 생성 중...\n");
 
     // LED 깜빡이며 준비 상태 표시
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 5; i = (i + 1)) {
       digitalWrite(LED_BUILTIN, HIGH);
       delay(100);
       digitalWrite(LED_BUILTIN, LOW);
@@ -213,15 +213,17 @@ void loop() {
     }
 
     // 버튼을 뗄 때까지 대기
-    while (digitalRead(SW_BUILTIN) == sw_Pressed);
+    while (digitalRead(SW_BUILTIN) == sw_Pressed) {
+      ;
+    }
 
     // 랜덤 ASCII 아트 선택
     int randomIndex = random(0, numAsciiArts);
 
     // 시리얼 모니터에 선택된 ASCII 아트 출력
-    Serial.println("\n🎨 당신의 랜덤 ASCII 아트:");
-    Serial.println(asciiArts[randomIndex]);
-    Serial.println("\n🔁 다시 버튼을 눌러 다른 아트를 출력하세요!\n");
+    Serial.print("\n🎨 당신의 랜덤 ASCII 아트:\n");
+    Serial.print(asciiArts[randomIndex]);
+    Serial.print("\n🔁 다시 버튼을 눌러 다른 아트를 출력하세요!\n");
 
     // 출력 완료 LED 피드백
     digitalWrite(LED_BUILTIN, HIGH);

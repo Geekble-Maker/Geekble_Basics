@@ -37,32 +37,26 @@ void loop() {
     // 버튼을 누르고 있으면 밝기 증가
     if (brightness < 255) { 
       brightness = (brightness + 1);  // 밝기 증가
-      if (brightness > 255) { // 최대 밝기(255) 도달 시
-        brightness = 255;     // 최대 밝기 제한
-      }
-      else {                  // 밝기 증가 중 이라면
-        // 현재 밝기를 시리얼 모니터에 출력
-        Serial.print("Brightness: ");
-        Serial.println(brightness);
-      }
+      // 현재 밝기를 시리얼 모니터에 출력
+      Serial.print("\nBrightness: ");
+      Serial.print(brightness);
     }
-    else {
-      brightness = 255;
+    else {                // 최대 밝기(255) 도달 시
+      brightness = 255;   // 최대 밝기 제한
     }
-    delay(100);   // 밝아지는 단계별 시간 간격
-  } else {  // if(digitalRead(SW_BUILTIN) == sw_Released)   // 만약 내장 스위치를 뗐다면
+    delay(20);   // 밝아지는 단계별 시간 간격
+  }
+  else {  // if(digitalRead(SW_BUILTIN) == sw_Released)   // 만약 내장 스위치를 뗐다면
     // 버튼을 떼면 밝기 감소
     if (0 < brightness) {
       brightness = (brightness - 1);  // 밝기 감소
-      if (brightness < 0) { // 최소 밝기(0) 도달 시
-        brightness = 0;     // 최소 밝기 제한
-      }
-      else {                // 밝기 감소 중 이라면
-        Serial.print("Brightness: ");
-        Serial.println(brightness);
-      }
+      Serial.print("\nBrightness: ");
+      Serial.print(brightness);
     }
-    delay(10);    // 어두워지는 단계별 시간 간격
+    else {                // 최소 밝기(0) 도달 시
+      brightness = 0;   // 최소 밝기 제한
+    }
+    delay(5);    // 어두워지는 단계별 시간 간격
   }
 
   analogWrite(LED_BUILTIN, brightness); // PWM 값으로 LED 밝기 조절

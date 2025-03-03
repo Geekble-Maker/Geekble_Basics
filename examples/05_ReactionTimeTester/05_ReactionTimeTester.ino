@@ -30,46 +30,39 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);  // 내장 LED를 출력 모드로 설정
   pinMode(SW_BUILTIN, INPUT_PULLUP);  // 내장 스위치를 입력 모드로 설정 (풀업 저항 사용)
 
-  Serial.println("🏆 Welcome to the Reaction Time Tester! 🏆");
-  Serial.println("Press the button to start the game.");
+  Serial.print("🏆 Welcome to the Reaction Time Tester! 🏆\n");
+  Serial.print("Press the button to start the game.\n");
 }
 
-/*
-  📌 [millis() 함수란?]
-  - millis()는 **아두이노가 실행된 이후 경과한 시간을 밀리초(ms) 단위로 반환**하는 함수입니다.
-  - 1초 = 1000ms 이므로, millis()는 현재까지 흐른 시간을 알 수 있습니다.
-  - 이 값을 저장해 두면 특정 이벤트(LED 켜짐, 버튼 눌림 등) 사이의 **시간 차이**를 계산할 수 있습니다.
-*/
-
 void loop() {
-  // ==========================
-  // 🎮 게임 시작 대기 (사용자가 버튼을 눌러야 시작)
-  // ==========================
-  Serial.println("\n🎮 Press the button to start the game...");
-  while (digitalRead(SW_BUILTIN) == sw_Released);  // 버튼이 눌릴 때까지 대기
+  // 🎮 게임 시작 전, 사용자가 버튼을 누를 때까지 대기
+  Serial.print("\n🎮 Press the button to start the game...\n");
+  while (digitalRead(SW_BUILTIN) == sw_Released) {  // 버튼이 눌릴 때까지 대기
+    ;  
+  }
   delay(500);  // 버튼이 눌린 후 잠시 대기 (잘못된 입력 방지)
 
-  Serial.println("\n🔄 Get Ready...");
-  delay(random(1000, 5000));  // 1~5초 랜덤 대기 (사용자가 예측할 수 없도록)
+  Serial.print("\n🔄 Get Ready...\n");
 
   // ==========================
-  // 🚨 False Start 체크
+  // 🚨 False Start 체크 (랜덤 대기 중)
   // ==========================
-  /*
-    사용자가 LED가 켜지기 전에 버튼을 누르면 "False Start!"를 출력하고 초기화합니다.
-    - LED가 켜지기 전(대기 중)에 버튼이 눌리면 잘못된 입력으로 간주됩니다.
-  */
-  if (digitalRead(SW_BUILTIN) == sw_Pressed) {
-    Serial.println("🚨 False Start! Wait for the LED to turn ON!");
-    delay(1000);  // 1초 대기 후 다시 게임 시작 대기 상태로 이동
-    return;  // loop()를 처음부터 다시 실행
+  unsigned long waitTime = random(1000, 5000);  // 1~5초 랜덤 대기 시간 설정
+  unsigned long waitStart = millis();  // 대기 시작 시간 기록
+
+  while (millis() - waitStart < waitTime) {  // 설정된 시간 동안 대기
+    if (digitalRead(SW_BUILTIN) == sw_Pressed) {  // 사용자가 버튼을 너무 빨리 눌렀는지 확인
+      Serial.print("🚨 False Start! Wait for the LED to turn ON!\n");
+      delay(1000);  // 1초 대기 후 다시 게임 시작 대기 상태로 이동
+      return;  // loop()를 처음부터 다시 실행
+    }
   }
 
   // ==========================
   // 🔥 LED 켜기 & 반응 시간 측정 시작
   // ==========================
   digitalWrite(LED_BUILTIN, HIGH);  // LED를 켜서 반응 시작 신호
-  Serial.println("⚡ NOW! Press the button as fast as you can!");
+  Serial.print("⚡ NOW! Press the button as fast as you can!\n");
   startTime = millis();  // 현재 시간을 저장 (LED가 켜진 순간의 시간 기록)
   waitingForResponse = true;  // 사용자의 반응을 기다리는 상태로 변경
 
@@ -82,13 +75,13 @@ void loop() {
 
       Serial.print("⏱️ Your reaction time: ");
       Serial.print(reactionTime);
-      Serial.println(" ms!");
+      Serial.print(" ms!\n");
 
       // LED 끄기 및 게임 종료 후 다시 버튼 대기 상태로 이동
       digitalWrite(LED_BUILTIN, LOW);
       waitingForResponse = false;
 
-      Serial.println("\n🔄 Press the button to play again...");
+      Serial.print("\n🔄 Press the button to play again...\n");
       while (digitalRead(SW_BUILTIN) == sw_Released);  // 다시 버튼을 누를 때까지 대기
       delay(500);  // 버튼을 눌린 후 잠시 대기 (잘못된 입력 방지)
     }
