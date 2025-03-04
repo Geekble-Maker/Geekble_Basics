@@ -29,10 +29,12 @@ void setup()
 void loop() 
 {
   // 내장 스위치가 눌렸는지 확인
-  if(digitalRead(SW_BUILTIN) == sw_Pressed) { // 만약 내장 스위치가 눌렸다면
+  if(digitalRead(SW_BUILTIN) == sw_Pressed)   // 만약 내장 스위치가 눌렸다면
+  { 
     digitalWrite(LED_BUILTIN, HIGH);          // LED를 켜기 (HIGH 출력)
   }
-  else {    // if(digitalRead(SW_BUILTIN) == sw_Released) // 만약 내장 스위치를 뗀 상태라면
-    digitalWrite(LED_BUILTIN, LOW);                       // LED를 끄기 (LOW 출력)
+  else // if(digitalRead(SW_BUILTIN) == sw_Released) // 만약 내장 스위치를 뗀 상태라면
+  {    
+    digitalWrite(LED_BUILTIN, LOW);           // LED를 끄기 (LOW 출력)
   }
 }

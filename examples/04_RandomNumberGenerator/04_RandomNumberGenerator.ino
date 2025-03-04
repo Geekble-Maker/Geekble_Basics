@@ -25,45 +25,56 @@
   4. 다시 버튼을 누르면 새로운 숫자를 뽑을 수 있습니다.
 */
 
-#define sw_Pressed  LOW  // 스위치가 눌린 상태를 LOW로 정의 (내장 풀업 저항 사용)
+#define sw_Pressed  LOW   // 스위치가 눌린 상태를 LOW로 정의 (내장 풀업 저항 사용)
 #define sw_Released HIGH  // 스위치를 뗀 상태를 HIGH로 정의 (내장 풀업 저항 사용)
 
 int luckyNumber = 0;  // 생성된 랜덤 숫자 저장 변수
 
-// setup() 함수: 초기 설정을 수행
-void setup() {
-  Serial.begin(115200);  // 시리얼 통신 속도를 115200bps로 설정 (시리얼 모니터용)
-
-  pinMode(LED_BUILTIN, OUTPUT);       // 내장 LED 핀을 출력 모드로 설정
-  pinMode(SW_BUILTIN, INPUT_PULLUP);  // 내장 스위치 핀을 입력 모드로 설정 (내부 풀업 저항 사용)
+// ==============================
+// 🔧 초기 설정 (setup) 함수
+// ==============================
+void setup() 
+{
+  Serial.begin(115200);   // 시리얼 통신 속도를 115200bps로 설정
+  pinMode(LED_BUILTIN, OUTPUT);       // 내장 LED를 출력 모드로 설정
+  pinMode(SW_BUILTIN, INPUT_PULLUP);  // 내장 스위치를 입력 모드로 설정 (내부 풀업 저항 사용)
 
   Serial.print("Press the button to get your lucky number!\n");  // 시작 메시지 출력
 }
 
-void loop() {
-  // 스위치를 눌렀을 때 랜덤 숫자 생성 시작
-  if (digitalRead(SW_BUILTIN) == sw_Pressed) {
+// ==============================
+// 🔄 메인 루프 (loop) 함수
+// ==============================
+void loop() 
+{
+  // ==========================
+  // 🎲 랜덤 숫자 생성 시작
+  // ==========================
+  if (digitalRead(SW_BUILTIN) == sw_Pressed) 
+  {  
     Serial.print("Generating your lucky number");
 
-    // 사용자가 버튼을 계속 누르고 있는 동안 반복 실행
-    while (digitalRead(SW_BUILTIN) == sw_Pressed) {
+    // 사용자가 버튼을 계속 누르고 있는 동안 랜덤 숫자 변경
+    while (digitalRead(SW_BUILTIN) == sw_Pressed) 
+    {  
       luckyNumber = random(1, 10);  // 1~9 사이의 랜덤 숫자 생성
 
-      Serial.print(".");
-      // LED가 50mSec마다 켜지고 꺼짐
+      Serial.print(".");  // 진행 상태를 '.'으로 표시
       digitalWrite(LED_BUILTIN, HIGH);
       delay(50);
       digitalWrite(LED_BUILTIN, LOW);
       delay(50);
     }
 
-    // 버튼을 뗀 순간 확정된 랜덤 숫자 출력
+    // ==========================
+    // 🎯 확정된 숫자 출력 및 LED 피드백
+    // ==========================
     Serial.print("\nYour Lucky Number: ");
     Serial.print(luckyNumber);
     Serial.print("\n");
 
-    // LED가 당첨된 숫자의 횟수만큼 깜빡임
-    for (int i = 0; i < luckyNumber; i = (i + 1)) {
+    for (int i = 0; i < luckyNumber; i = (i + 1)) 
+    {  
       digitalWrite(LED_BUILTIN, HIGH);
       delay(300);
       digitalWrite(LED_BUILTIN, LOW);

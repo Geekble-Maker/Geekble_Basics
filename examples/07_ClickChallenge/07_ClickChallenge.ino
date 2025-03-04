@@ -19,7 +19,7 @@
   6. 버튼을 눌러 다시 도전할 수 있습니다.
 */
 
-#define sw_Pressed  LOW  // 스위치가 눌린 상태를 LOW로 정의 (내장 풀업 저항 사용)
+#define sw_Pressed  LOW   // 스위치가 눌린 상태를 LOW로 정의 (내장 풀업 저항 사용)
 #define sw_Released HIGH  // 스위치를 뗀 상태를 HIGH로 정의 (내장 풀업 저항 사용)
 
 int clickCount = 0;      // 현재 클릭 횟수 저장
@@ -29,7 +29,8 @@ unsigned long startTime; // 게임 시작 시간을 저장 (millis() 사용)
 // ==============================
 // 🔧 초기 설정 (setup) 함수
 // ==============================
-void setup() {
+void setup() 
+{
   Serial.begin(115200);  // 시리얼 통신 시작
   pinMode(LED_BUILTIN, OUTPUT);       // 내장 LED를 출력 모드로 설정
   pinMode(SW_BUILTIN, INPUT_PULLUP);  // 내장 스위치를 입력 모드로 설정 (풀업 저항 사용)
@@ -41,10 +42,15 @@ void setup() {
 // ==============================
 // 🎮 메인 게임 루프 (loop) 함수
 // ==============================
-void loop() {
-  // 🎮 게임 시작 전, 사용자가 버튼을 누를 때까지 대기
+void loop() 
+{
+  // ==============================
+  // 🎮 게임 시작 전 대기
+  // ==============================
   Serial.print("\n🎮 Press the button to start the game...\n");
-  while (digitalRead(SW_BUILTIN) != sw_Pressed) {  // 버튼이 눌릴 때까지 대기
+  
+  while (digitalRead(SW_BUILTIN) != sw_Pressed) 
+  {  
     ;
   }
   delay(50);  // 디바운싱 방지 (잘못된 중복 입력을 막기 위해 잠시 대기)
@@ -66,8 +72,8 @@ void loop() {
   clickCount = 0;  // 클릭 횟수 초기화
   startTime = millis();  // 현재 시간을 기록 (10초 타이머 시작)
 
-  // 게임이 10초 동안 진행됨
-  while (millis() - startTime < 10000) {  
+  while ((millis() - startTime) < 10000) 
+  {  
     checkButtonPress();  // 사용자의 버튼 입력 감지
   }
 
@@ -79,10 +85,13 @@ void loop() {
   Serial.print("\n");
 
   // 📌 최고 점수 업데이트
-  if (clickCount > highScore) {
+  if (clickCount > highScore) 
+  {  
     highScore = clickCount;
     Serial.print("🏆 New High Score!\n");
-  } else {
+  } 
+  else 
+  {  
     Serial.print("🏅 Best Score: ");
     Serial.print(highScore);
     Serial.print("\n");
@@ -91,7 +100,8 @@ void loop() {
   Serial.print("🔁 Press the button to play again!\n");
 
   // 🕹️ 사용자가 다시 버튼을 누를 때까지 대기
-  while (digitalRead(SW_BUILTIN) == sw_Released) {
+  while (digitalRead(SW_BUILTIN) == sw_Released) 
+  {  
     ;
   }
   delay(500);  // 버튼이 눌린 후 잘못된 중복 입력 방지를 위한 짧은 대기
@@ -110,9 +120,11 @@ void loop() {
   - 기계식 버튼은 눌릴 때 신호가 여러 번 튀는 현상이 발생할 수 있음.
   - `delay(50)`을 추가하여 버튼이 확실히 눌렸다가 떼어진 후에만 카운트되도록 조정.
 */
-void checkButtonPress() {
-  if (digitalRead(SW_BUILTIN) == sw_Pressed) {  // 버튼이 눌렸는지 확인
-    clickCount = (clickCount + 1);              // 클릭 횟수 증가
+void checkButtonPress() 
+{
+  if (digitalRead(SW_BUILTIN) == sw_Pressed)  
+  {  
+    clickCount = (clickCount + 1);  // 클릭 횟수 증가
 
     // 점수 출력
     Serial.print("👍 Click! Total: ");
@@ -125,7 +137,8 @@ void checkButtonPress() {
     digitalWrite(LED_BUILTIN, LOW);
 
     // 버튼이 떼어질 때까지 대기 (디바운싱 처리)
-    while (digitalRead(SW_BUILTIN) == sw_Pressed) {
+    while (digitalRead(SW_BUILTIN) == sw_Pressed)  
+    {  
       ;
     }
     delay(50);  // 불필요한 추가 입력 방지

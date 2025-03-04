@@ -17,8 +17,10 @@
   3. LED가 진행 상태를 나타내며, 출력이 끝나면 LED가 잠깐 켜졌다 꺼집니다.
 */
 
-#define sw_Pressed  LOW  // 스위치가 눌린 상태를 LOW로 정의 (내장 풀업 저항 사용)
+#define sw_Pressed  LOW   // 스위치가 눌린 상태를 LOW로 정의 (내장 풀업 저항 사용)
 #define sw_Released HIGH  // 스위치를 뗀 상태를 HIGH로 정의 (내장 풀업 저항 사용)
+
+int numAsciiArts = 0;  // ASCII 아트 개수를 저장할 변수 (초기화)
 
 // ==============================
 // 🎨 ASCII 아트 리스트 정의 🎨
@@ -162,50 +164,46 @@ const char* asciiArts[] = {
      (_)(_)(_)(_)          (_)(_)(_)            (_)(_)(_)         (_)(_)(_)(_)      
 
   )",
-NULL // 마지막 원소는 NULL (배열 종료를 알림) 
+  NULL // 마지막 원소는 NULL (배열 종료를 알림) 
 };
 
-int numAsciiArts = 0;  // ASCII 아트 개수를 저장할 변수 (초기화)
-
-/*
-  📌 [setup() 함수]
-  - 초기 설정을 수행하는 함수로, 프로그램이 시작될 때 한 번 실행됩니다.
-  - 여기서 numAsciiArts의 개수를 자동으로 계산합니다.
-*/
-void setup() {
-  Serial.begin(115200);  // 시리얼 통신 시작
-  pinMode(LED_BUILTIN, OUTPUT);  // LED 출력 설정
-  pinMode(SW_BUILTIN, INPUT_PULLUP);  // 스위치 입력 (풀업 저항 사용)
+// ==============================
+// 🔧 초기 설정 (setup) 함수
+// ==============================
+void setup() 
+{
+  Serial.begin(115200);   // 시리얼 통신 속도를 115200bps로 설정
+  pinMode(LED_BUILTIN, OUTPUT);       // 내장 LED를 출력 모드로 설정
+  pinMode(SW_BUILTIN, INPUT_PULLUP);  // 내장 스위치를 입력 모드로 설정 (내부 풀업 저항 사용)
 
   // ==============================
-  // 🎯 ASCII 아트 개수 계산 🎯
+  // 🎯 ASCII 아트 개수 자동 계산
   // ==============================
-
-  /*
-    📌 [ASCII 아트 개수 자동 계산]
-    - NULL을 만날 때까지 반복문을 실행하여 총 개수를 구함.
-  */
-  while (asciiArts[numAsciiArts] != NULL) {
-    numAsciiArts++;
+  while (asciiArts[numAsciiArts] != NULL) 
+  {
+    numAsciiArts = (numAsciiArts + 1);
   }
 
-  // 시리얼 모니터에 ASCII 아트 개수 출력
   Serial.print("🎨 총 ASCII 아트 개수: ");
   Serial.print(numAsciiArts);
-  Serial.print("\n🎨 버튼을 눌러 랜덤 ASCII 아트를 출력하세요! 🎨\n");
+  Serial.print("\n🎨 버튼을 눌러 랜덤 ASCII 아트를 출력하세요!\n");
 }
 
 // ==============================
 // 🔄 랜덤 ASCII 아트 출력 기능 🔄
 // ==============================
-
-void loop() {
-  // 버튼이 눌렸을 때 실행
-  if (digitalRead(SW_BUILTIN) == sw_Pressed) {
+void loop() 
+{
+  // ==========================
+  // 🎨 ASCII 아트 선택
+  // ==========================
+  if (digitalRead(SW_BUILTIN) == sw_Pressed) 
+  {  
     Serial.print("🔄 ASCII 아트 생성 중...\n");
 
     // LED 깜빡이며 준비 상태 표시
-    for (int i = 0; i < 5; i = (i + 1)) {
+    for (int i = 0; i < 5; i = (i + 1)) 
+    {  
       digitalWrite(LED_BUILTIN, HIGH);
       delay(100);
       digitalWrite(LED_BUILTIN, LOW);
@@ -213,14 +211,17 @@ void loop() {
     }
 
     // 버튼을 뗄 때까지 대기
-    while (digitalRead(SW_BUILTIN) == sw_Pressed) {
+    while (digitalRead(SW_BUILTIN) == sw_Pressed) 
+    {  
       ;
     }
 
     // 랜덤 ASCII 아트 선택
     int randomIndex = random(0, numAsciiArts);
 
-    // 시리얼 모니터에 선택된 ASCII 아트 출력
+    // ==========================
+    // 🎯 선택된 ASCII 아트 출력
+    // ==========================
     Serial.print("\n🎨 당신의 랜덤 ASCII 아트:\n");
     Serial.print(asciiArts[randomIndex]);
     Serial.print("\n🔁 다시 버튼을 눌러 다른 아트를 출력하세요!\n");

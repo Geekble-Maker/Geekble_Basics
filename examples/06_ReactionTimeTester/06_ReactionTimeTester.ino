@@ -25,20 +25,32 @@
 unsigned long startTime;  // LED가 켜진 시간을 저장 (반응 시간 계산용)
 bool waitingForResponse = false;  // 사용자가 반응해야 하는 상태인지 확인
 
-void setup() {
-  Serial.begin(115200);  // 시리얼 통신 시작 (115200 baud 속도)
-  pinMode(LED_BUILTIN, OUTPUT);  // 내장 LED를 출력 모드로 설정
+// ==============================
+// 🔧 초기 설정 (setup) 함수
+// ==============================
+void setup() 
+{
+  Serial.begin(115200);   // 시리얼 통신 시작 (115200 baud 속도)
+  pinMode(LED_BUILTIN, OUTPUT);       // 내장 LED를 출력 모드로 설정
   pinMode(SW_BUILTIN, INPUT_PULLUP);  // 내장 스위치를 입력 모드로 설정 (풀업 저항 사용)
 
   Serial.print("🏆 Welcome to the Reaction Time Tester! 🏆\n");
   Serial.print("Press the button to start the game.\n");
 }
 
-void loop() {
-  // 🎮 게임 시작 전, 사용자가 버튼을 누를 때까지 대기
+// ==============================
+// 🎮 메인 게임 루프 (loop) 함수
+// ==============================
+void loop() 
+{
+  // ==========================
+  // 🎮 게임 시작 대기
+  // ==========================
   Serial.print("\n🎮 Press the button to start the game...\n");
-  while (digitalRead(SW_BUILTIN) == sw_Released) {  // 버튼이 눌릴 때까지 대기
-    ;  
+  
+  while (digitalRead(SW_BUILTIN) == sw_Released) 
+  {  
+    ;
   }
   delay(500);  // 버튼이 눌린 후 잠시 대기 (잘못된 입력 방지)
 
@@ -50,8 +62,10 @@ void loop() {
   unsigned long waitTime = random(1000, 5000);  // 1~5초 랜덤 대기 시간 설정
   unsigned long waitStart = millis();  // 대기 시작 시간 기록
 
-  while (millis() - waitStart < waitTime) {  // 설정된 시간 동안 대기
-    if (digitalRead(SW_BUILTIN) == sw_Pressed) {  // 사용자가 버튼을 너무 빨리 눌렀는지 확인
+  while ((millis() - waitStart) < waitTime) 
+  {  
+    if (digitalRead(SW_BUILTIN) == sw_Pressed)  
+    {  
       Serial.print("🚨 False Start! Wait for the LED to turn ON!\n");
       delay(1000);  // 1초 대기 후 다시 게임 시작 대기 상태로 이동
       return;  // loop()를 처음부터 다시 실행
@@ -69,8 +83,10 @@ void loop() {
   // ==========================
   // 🎯 사용자의 반응을 기다림
   // ==========================
-  while (waitingForResponse) {
-    if (digitalRead(SW_BUILTIN) == sw_Pressed) {  // 버튼이 눌렸는지 확인
+  while (waitingForResponse) 
+  {
+    if (digitalRead(SW_BUILTIN) == sw_Pressed)  
+    {  
       unsigned long reactionTime = millis() - startTime;  // 반응 속도 계산
 
       Serial.print("⏱️ Your reaction time: ");
@@ -82,8 +98,12 @@ void loop() {
       waitingForResponse = false;
 
       Serial.print("\n🔄 Press the button to play again...\n");
-      while (digitalRead(SW_BUILTIN) == sw_Released);  // 다시 버튼을 누를 때까지 대기
-      delay(500);  // 버튼을 눌린 후 잠시 대기 (잘못된 입력 방지)
+      
+      while (digitalRead(SW_BUILTIN) == sw_Released) 
+      {  
+        ;
+      }
+      delay(500);  // 버튼이 눌린 후 잠시 대기 (잘못된 입력 방지)
     }
   }
 }
